@@ -1,18 +1,22 @@
-'use strict';
-
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
 const process = require('process');
 const basename = path.basename(__filename);
-const config = require('../config/config.json');
+const env = process.env.NODE_ENV || 'development';
+const config = require('../config/config.json')[env];
 const db = {};
 
 let sequelize;
 if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
+  sequelize = new Sequelize(process.env[config.use_env_variable], {
+    dialect: 'mysql',
+  });
 } else {
-  sequelize = new Sequelize(config.development.database, config.development.username, config.development.password, config.development.dialect);
+  sequelize = new Sequelize(config.database, config.username, config.password, {
+    host: config.host,
+    dialect: 'mysql',
+  });
 }
 
 fs
